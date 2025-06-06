@@ -4,9 +4,7 @@ import LoginForm from "./LoginForm";
 
 const LoginPage = () => {
   return (
-    <>
-      <AuroraBackground children={<LoginForm />} />
-    </>
+    <LoginForm />
   );
 };
 

@@ -9,11 +9,12 @@ import { supabase } from "./client";
 export async function runQuery<Row>(
   table: string,
   queryCallback: (
-    from: ReturnType<typeof supabase['from']> // generic call will be typed correctly inside
+    from: ReturnType<typeof supabase.from<Row>>
   ) => Promise<{ data: Row[] | null; error: any }>
 ): Promise<Row[] | null> {
   try {
-    const { data, error } = await queryCallback(supabase.from<Row>(table));
+    const from = supabase.from<Row>(table);
+    const { data, error } = await queryCallback(from);
     if (error) throw error;
     return data;
   } catch (error) {
