@@ -13,7 +13,7 @@ import { useRootStore } from "@/store/rootState";
 export default function LoginForm() {
   const supabase = createClientComponentClient();
   const router = useRouter();
-  const setAuth = useRootStore((state) => state.authActions.setAuth);
+  const setAuth = useRootStore((state) => state.actions.authActions.setAuth);
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);

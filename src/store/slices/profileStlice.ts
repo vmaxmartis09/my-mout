@@ -1,4 +1,6 @@
-import { StateCreator } from "zustand";
+
+// ✅ profileSlice.ts
+import { StateCreator, StoreApi } from "zustand";
 import { fetchUserProfile } from "@/app/api/fetchProfile";
 import { UserProfile } from "@/lib/supabase/type";
 import { RootStore } from "../rootState";
@@ -17,18 +19,13 @@ export interface ProfileSlice {
   };
 }
 
-// Reducer cho profile
 const profileReducer = (
   state: ProfileState,
   action: { type: string; payload?: any }
 ): ProfileState => {
   switch (action.type) {
     case "LOAD_PROFILE_START":
-      return {
-        ...state,
-        loading: true,
-        error: null,
-      };
+      return { ...state, loading: true, error: null };
     case "LOAD_PROFILE_SUCCESS":
       return {
         ...state,
@@ -47,7 +44,6 @@ const profileReducer = (
       };
     case "CLEAR_PROFILE":
       return {
-        ...state,
         data: null,
         loading: false,
         error: null,
@@ -57,18 +53,16 @@ const profileReducer = (
   }
 };
 
-export const createProfileSlice: StateCreator<
-  RootStore,
-  [],
-  [],
-  ProfileSlice
-> = (set) => ({
+export const createProfileSlice = (
+  set: StoreApi<RootStore>["setState"],
+  get: StoreApi<RootStore>["getState"],
+  store: StoreApi<RootStore>
+): ProfileSlice => ({
   profile: {
     data: null,
     loading: false,
     error: null,
   },
-
   profileActions: {
     loadProfile: async (userId: string) => {
       if (!userId) {

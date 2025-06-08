@@ -1,4 +1,5 @@
-import { StateCreator } from "zustand";
+// ✅ authSlice.ts
+import { StateCreator, StoreApi } from "zustand";
 import { Session, User } from "@supabase/supabase-js";
 import { RootStore } from "../rootState";
 
@@ -16,7 +17,6 @@ export interface AuthSlice {
   };
 }
 
-// Reducer cho auth
 const authReducer = (state: AuthState, action: { type: string; payload?: any }): AuthState => {
   switch (action.type) {
     case "SET_AUTH":
@@ -36,13 +36,16 @@ const authReducer = (state: AuthState, action: { type: string; payload?: any }):
   }
 };
 
-export const createAuthSlice: StateCreator<RootStore, [], [], AuthSlice> = (set, get) => ({
+export const createAuthSlice = (
+  set: StoreApi<RootStore>["setState"],
+  get: StoreApi<RootStore>["getState"],
+  store: StoreApi<RootStore>
+): AuthSlice => ({
   auth: {
     user: null,
     session: null,
     isAuthenticated: false,
   },
-
   authActions: {
     setAuth: async (auth) => {
       set((state) => ({
@@ -50,9 +53,8 @@ export const createAuthSlice: StateCreator<RootStore, [], [], AuthSlice> = (set,
         auth: authReducer(state.auth, { type: "SET_AUTH", payload: auth }),
       }));
 
-      // Chỉ gọi loadProfile nếu userId tồn tại (tránh lỗi khi user null)
       if (auth.user?.id) {
-        await get().profileActions.loadProfile(auth.user.id);
+        await get().actions.profileActions.loadProfile(auth.user.id);
       }
     },
 
@@ -61,7 +63,8 @@ export const createAuthSlice: StateCreator<RootStore, [], [], AuthSlice> = (set,
         ...state,
         auth: authReducer(state.auth, { type: "CLEAR_AUTH" }),
       }));
-      get().profileActions.clearProfile();
+      get().actions.profileActions.clearProfile();
     },
   },
 });
+
