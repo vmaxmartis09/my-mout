@@ -135,6 +135,7 @@ export const BackgroundBeams = React.memo(
         </svg>
       </div>
     );
+
   },
 );
 
